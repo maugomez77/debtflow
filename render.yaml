@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: debtflow-api
+    env: python
+    region: oregon
+    plan: starter
+    buildCommand: pip install -e .
+    startCommand: debtflow serve --port 8000 --no-reload
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: HOURLY_RATE
+        value: "150"
+      - key: FRONTEND_URL
+        value: "https://debtflow.vercel.app"
+    autoDeploy: true
