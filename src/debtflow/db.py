@@ -13,9 +13,14 @@ elif _db_url.startswith("postgres://"):
 if "?" in _db_url:
     _db_url = _db_url.split("?")[0]
 
-_kw = {"echo": False, "pool_size": 10, "max_overflow": 20}
-if _is_postgres:
-    _kw["connect_args"] = {"ssl": True}
+_kw = {
+    "echo": False,
+    "pool_size": 3,
+    "max_overflow": 5,
+    "pool_pre_ping": True,
+    "pool_recycle": 300,
+    "connect_args": {"ssl": True, "timeout": 30} if _is_postgres else {},
+}
 engine = create_async_engine(_db_url, **_kw)
 async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
