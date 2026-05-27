@@ -15,7 +15,7 @@ if "?" in _db_url:
 
 _kw = {"echo": False, "pool_size": 10, "max_overflow": 20}
 if _is_postgres:
-    _kw["connect_args"] = {"ssl": "require"}
+    _kw["connect_args"] = {"ssl": True}
 engine = create_async_engine(_db_url, **_kw)
 async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
