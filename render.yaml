@@ -4,8 +4,8 @@ services:
     env: python
     region: oregon
     plan: starter
-    buildCommand: pip install -e .
-    startCommand: debtflow serve --port 8000 --no-reload
+    buildCommand: pip install -r requirements.txt
+    startCommand: PYTHONPATH=src uvicorn debtflow.api.main:app --host 0.0.0.0 --port 10000
     envVars:
       - key: DATABASE_URL
         sync: false
@@ -14,5 +14,5 @@ services:
       - key: HOURLY_RATE
         value: "150"
       - key: FRONTEND_URL
-        value: "https://debtflow.vercel.app"
+        value: "https://debtflow-delta.vercel.app"
     autoDeploy: true
