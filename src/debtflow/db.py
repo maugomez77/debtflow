@@ -5,6 +5,7 @@ from sqlalchemy.orm import DeclarativeBase
 from .config import settings
 
 _db_url = settings.DATABASE_URL
+_is_postgres = "postgres" in _db_url
 if _db_url.startswith("postgresql://"):
     _db_url = _db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
 elif _db_url.startswith("postgres://"):
@@ -12,7 +13,10 @@ elif _db_url.startswith("postgres://"):
 if "?" in _db_url:
     _db_url = _db_url.split("?")[0]
 
-engine = create_async_engine(_db_url, echo=False, pool_size=10, max_overflow=20, connect_args={"ssl": "require"})
+_kw = {"echo": False, "pool_size": 10, "max_overflow": 20}
+if _is_postgres:
+    _kw["connect_args"] = {"ssl": "require"}
+engine = create_async_engine(_db_url, **_kw)
 async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
