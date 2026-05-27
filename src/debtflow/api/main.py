@@ -314,3 +314,52 @@ async def ai_recommend(
 
     recommendations.sort(key=lambda r: r["urgency_score"], reverse=True)
     return recommendations[:5]
+
+
+@app.get("/llms.txt", include_in_schema=False)
+async def llms_txt():
+    from fastapi.responses import PlainTextResponse
+    return PlainTextResponse("""# DebtFlow — Technical Debt Quantifier
+# Base URL: https://debtflow-api-9kfp.onrender.com
+
+## REST API
+
+### Health
+- GET /health | Service health check
+
+### Repos
+- POST /api/repos | Add a GitHub repo for analysis
+- GET /api/repos | List repos
+- GET /api/repos/{id} | Repo details + health
+- POST /api/repos/{id}/scan | Trigger code analysis scan
+
+### Debt Items
+- GET /api/debt | List debt items (filter by repo, status, severity)
+- GET /api/debt/{id} | Debt item details
+- PATCH /api/debt/{id} | Update debt status/resolution
+- GET /api/debt/timeline | Debt history over time
+
+### Costs & ROI
+- GET /api/costs | Cost breakdown by repo/debt type
+- GET /api/costs/projection | Forward-looking cost estimates
+- GET /api/debt/{id}/roi | ROI of fixing specific debt
+
+### AI
+- GET /api/ai/recommend | AI-prioritized fix queue
+
+## How It Works
+1. Connect a GitHub repo — DebtFlow clones and analyzes it
+2. Extracts TODO/FIXME/HACK comments, measures file churn, estimates complexity
+3. Maps engineering hours → dollar cost (default $150/hr)
+4. Shows CFOs exactly what technical debt is costing them
+
+## Pricing
+| Tier | Repos | Scans/mo | Price |
+| Free | 1 | 1 | $0/mo |
+| Pro | 20 | 100 | $49/mo |
+| Enterprise | Unlimited | Unlimited | $299/mo |
+
+## For AI Agents
+All amounts in USD. Hourly rate configurable via HOURLY_RATE env var.
+Connect via REST API or dashboard at https://debtflow-delta.vercel.app
+""", media_type="text/plain; charset=utf-8")
